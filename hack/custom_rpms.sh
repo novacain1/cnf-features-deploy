@@ -57,9 +57,11 @@ data:
       done   
       \${rpm_install_cmd}
     else
+      rpm_install_cmd="rpm-ostree override replace"
       for rpm in \${install_rpms}; do
-        rpm-ostree install \${TEMP_DIR}/\${rpm}
+        rpm_install_cmd="\${rpm_install_cmd} \${TEMP_DIR}/\${rpm}"
       done
+      \${rpm_install_cmd}
     fi
 
     mkdir -p \${LOG_DIR}
@@ -90,6 +92,8 @@ spec:
       labels:
         app: rpms-ds
     spec:
+      serviceAccountName: testharness-sa-r
+      serviceAccount: testharness-sa-r
       hostNetwork: true
       nodeSelector:
         ${RPMS_NODE_ROLE}: ""
